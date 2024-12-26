@@ -10,16 +10,8 @@ for _, sEventName in pairs({
     mods.events:add_listener(sEventName);
 end
 
-local ETeams = {
-    [0] = "U";
-    [1] = "S";
-    [2] = "T";
-    [3] = "CT";
-};
-
-local EPlayerColor = {
-    [0] = "Blue"; "Green", "Yellow", "Orange", "Purple"
-};
+local ETeams = { [0] = "U"; "S", "T", "CT" };
+local EPlayerColor = { [0] = "Blue"; "Green", "Yellow", "Orange", "Purple" };
 
 -- Called when a vote starts
 local function OnVoteOptions(ctx)
@@ -37,7 +29,7 @@ local function OnVoteOptions(ctx)
     end
 
     g_aVoteOptions = aOptions;
-    g_aCMDs[#g_aCMDs + 1] = sTxt .. ' ';
+    g_aCMDs[#g_aCMDs + 1] = sTxt .. '\"';
 end
 
 -- Called when someone casts a vote
