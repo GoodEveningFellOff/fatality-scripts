@@ -51,6 +51,7 @@ var FatalityMainMenuLobby;
     const _cTimes = '\u{2716}';
     const _regexFriendCode = /^(\w{5}-\w{4})$/i;
 
+    let _m_elChatLinesContainer = undefined;
     function _FixLabelString(str) {
         return str.replaceAll('&apos;', `'`).replaceAll('&quot;', `"`).replaceAll('&lt;', `<`).replaceAll('&gt;', `>`).replaceAll('&amp;', `&`);
     };
@@ -580,6 +581,26 @@ var FatalityMainMenuLobby;
             LobbyAPI.KickPlayer(stPlayer.xuid);
         }},
 
+        { m_sTitle: 'Clear', m_aAliases: ['clear', 'cc'], m_bEnabled: true, m_bHostOnly: false, m_bTrustedOnly: true, m_fnExec: (aArgs, sUser, sSteamID) => {
+            if(!_m_elChatLinesContainer) return;
+            
+            let sMsg = '';
+            for(let i = 0; i < 100; i++) {
+                sMsg = sMsg + `\u{2028} `;
+            }
+            for(let i = 0; i < 10; i++) {
+                _SayParty(sMsg);
+            }
+            
+            $.Schedule(0.5, () => {
+                // If we don't safe the last element then we will not be able to open chat.
+                let elLast = _m_elChatLinesContainer.GetChild(0);
+                elLast.SetParent(_m_elChatLinesContainer.GetParent());
+                _m_elChatLinesContainer.RemoveAndDeleteChildren();
+                elLast.SetParent(_m_elChatLinesContainer);
+            });
+        }},
+
         { m_sTitle: '8Ball', m_aAliases: ['8ball', '8b'], m_bEnabled: true, m_bHostOnly: false, m_bTrustedOnly: false, m_fnExec: (aArgs, sUser, sSteamID) => {
             const a8BallAnswers = [
                 'It is certain', 'It is decidedly so', 'Without a doubt', 'Yes definitely', 'You may rely on it', 'As I see it, yes', 'Most likely', 'Outlook good', 'Yes', 'Signs point to yes',
@@ -614,6 +635,8 @@ var FatalityMainMenuLobby;
             if(!elEntry.BHasClass('chat-entry')){
                 return;
             }
+
+            if(elEntry.GetParent().BHasClass('chat-container__lines')) _m_elChatLinesContainer = elEntry.GetParent();
 
             let elPanel = elEntry.GetChild(0);
             if(!elPanel.BHasClass('left-right-flow') || !elPanel.BHasClass('horizontal-align-left')){
